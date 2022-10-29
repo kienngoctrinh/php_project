@@ -21,3 +21,20 @@ $sql        = "SELECT * FROM products WHERE name LIKE '%$search%'
            LIMIT $limit OFFSET $skip";
 $result     = mysqli_query($connect, $sql);
 
+echo "<table border='1'>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Image</th>
+        </tr>";
+
+if (isset($search)) {
+    while ($each = mysqli_fetch_array($result)) {
+        echo "<tr>
+            <td>{$each['id']}</td>
+            <td>{$each['name']}</td>
+            <td><img src='images/{$each['image']}' width='100px' height='100px'></td>
+        </tr>";
+    }
+}
+

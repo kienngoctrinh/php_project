@@ -1,6 +1,6 @@
 <form id='form-search'>
     Search:
-    <input type='search' name='search' id='input-search' value=''>
+    <input type="search" name="search" id="input-search">
 </form>
 <div id="content">
 
