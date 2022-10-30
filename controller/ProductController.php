@@ -12,13 +12,13 @@ switch ($action) {
         $name = $_POST['name'];
         $email = $_POST['email'];
         $phone = $_POST['phone'];
-        $description = $_POST['description'];
+        $description = $_POST['description'] ?? null;
+        $price = $_POST['price'];
         $image = $_FILES['image'];
-        $manufacturing_date = $_POST['manufacturing_date'];
-        $expiry_date = $_POST['expiry_date'];
+        $created_at = date('Y-m-d H:i:s');
 
         require "model/Product.php";
-        storeProduct($name, $email, $phone, $description, $manufacturing_date, $expiry_date);
+        store($name, $email, $phone, $description, $price, $image, $created_at);
         header('location: index.php');
         break;
     case 'detail':

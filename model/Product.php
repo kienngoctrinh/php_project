@@ -4,28 +4,17 @@ require_once "Connect.php";
 
 $connect = connect();
 
-function getProduct()
-{
-    global $connect;
-
-    $sql = "SELECT * FROM products";
-    $result = mysqli_query($connect, $sql);
-
-    return $result;
-}
-
-function storeProduct(
+function store(
     $name,
     $email,
     $phone,
     $description,
-    $manufacturing_date,
-    $expiry_date
+    $price,
+    $image,
+    $created_at
 )
 {
     global $connect;
-
-    $image = $_FILES['image'];
 
     $folder        = 'images/';
     $fileExtension = explode('.', $image['name'])[1];
@@ -34,11 +23,12 @@ function storeProduct(
 
     move_uploaded_file($image['tmp_name'], $pathFile);
 
-    $sql = "INSERT INTO products (name, email, phone, description, image, manufacturing_date, expiry_date)
-            VALUES ('$name', '$email', '$phone', '$description', '$fileName', '$manufacturing_date', '$expiry_date')";
-    $result = mysqli_query($connect, $sql);
+    $sql = "INSERT INTO products (name, email, phone, description, price, image, created_at)
+            VALUES ('$name', '$email', '$phone', '$description', '$price', '$fileName', '$created_at')";
 
-    return $result;
+    mysqli_query($connect, $sql);
+
+    mysqli_close($connect);
 }
 
 function detail($id)
