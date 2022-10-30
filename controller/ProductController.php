@@ -2,7 +2,9 @@
 
 switch ($action) {
     case '':
+        require "model/Product.php";
         require "model/Search.php";
+        $result = index();
         require 'view/index.php';
         break;
     case 'create':
@@ -15,10 +17,10 @@ switch ($action) {
         $description = $_POST['description'] ?? null;
         $price = $_POST['price'];
         $image = $_FILES['image'];
-        $created_at = date('Y-m-d H:i:s');
+        $createdAt = date('Y-m-d H:i:s');
 
         require "model/Product.php";
-        store($name, $email, $phone, $description, $price, $image, $created_at);
+        store($name, $email, $phone, $description, $price, $image, $createdAt);
         header('location: index.php');
         break;
     case 'detail':
@@ -38,13 +40,13 @@ switch ($action) {
         $name = $_POST['name'];
         $email = $_POST['email'];
         $phone = $_POST['phone'];
-        $description = $_POST['description'];
+        $description = $_POST['description'] ?? null;
+        $price = $_POST['price'];
         $newImage = $_FILES['new_image'];
-        $manufacturingDate = $_POST['manufacturing_date'];
-        $expiryDate = $_POST['expiry_date'];
+        $updatedAt = date('Y-m-d H:i:s');
 
         require "model/Product.php";
-        update($id, $name, $email, $phone, $description, $newImage, $manufacturingDate, $expiryDate);
+        update($id, $name, $email, $phone, $description, $price, $newImage, $updatedAt);
         header('location: index.php?action=detail&id=' . $id);
         break;
     case 'delete':

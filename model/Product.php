@@ -4,6 +4,19 @@ require_once "Connect.php";
 
 $connect = connect();
 
+function index()
+{
+    global $connect;
+
+    $sql = "SELECT * FROM products";
+
+    $result = mysqli_query($connect, $sql);
+
+    mysqli_close($connect);
+
+    return $result;
+}
+
 function store(
     $name,
     $email,
@@ -11,24 +24,36 @@ function store(
     $description,
     $price,
     $image,
-    $created_at
+    $createdAt
 )
 {
     global $connect;
+
+    $name = htmlspecialchars($name);
+    $email = htmlspecialchars($email);
+    $phone = htmlspecialchars($phone);
+    $description = htmlspecialchars($description);
+    $price = htmlspecialchars($price);
 
     $folder        = 'images/';
     $fileExtension = explode('.', $image['name'])[1];
     $fileName      = uniqid() . time() . '.' . $fileExtension;
     $pathFile      = $folder . $fileName;
 
-    move_uploaded_file($image['tmp_name'], $pathFile);
+    if ($image['name'] == '') {
+        $fileName = 'default.png';
+    }
 
-    $sql = "INSERT INTO products (name, email, phone, description, price, image, created_at)
-            VALUES ('$name', '$email', '$phone', '$description', '$price', '$fileName', '$created_at')";
+    if ($fileExtension == 'jpg' || $fileExtension == 'png' || $fileExtension == 'jpeg' || $fileExtension == '') {
+        move_uploaded_file($image['tmp_name'], $pathFile);
 
-    mysqli_query($connect, $sql);
+        $sql = "INSERT INTO products (name, email, phone, description, price, image, created_at)
+            VALUES ('$name', '$email', '$phone', '$description', '$price', '$fileName', '$createdAt')";
 
-    mysqli_close($connect);
+        mysqli_query($connect, $sql);
+
+        mysqli_close($connect);
+    }
 }
 
 function detail($id)
@@ -39,6 +64,8 @@ function detail($id)
     $result = mysqli_query($connect, $sql);
     $each = mysqli_fetch_array($result);
 
+    mysqli_close($connect);
+
     return $each;
 }
 
@@ -48,12 +75,18 @@ function update(
     $email,
     $phone,
     $description,
+    $price,
     $newImage,
-    $manufacturingDate,
-    $expiryDate
+    $updatedAt
 )
 {
     global $connect;
+
+    $name = htmlspecialchars($name);
+    $email = htmlspecialchars($email);
+    $phone = htmlspecialchars($phone);
+    $description = htmlspecialchars($description);
+    $price = htmlspecialchars($price);
 
     if ($newImage['size'] > 0) {
         $folder        = 'images/';
@@ -61,24 +94,42 @@ function update(
         $fileName      = uniqid() . time() . '.' . $fileExtension;
         $pathFile      = $folder . $fileName;
 
-        move_uploaded_file($newImage['tmp_name'], $pathFile);
+        if ($fileExtension == 'jpg' || $fileExtension == 'png' || $fileExtension == 'jpeg') {
+            move_uploaded_file($newImage['tmp_name'], $pathFile);
+
+            $sql = "UPDATE products
+            SET
+            name = '$name',
+            email = '$email',
+            phone = '$phone',
+            description = '$description',
+            image = '$fileName',
+            price = '$price',
+            updated_at = '$updatedAt'
+            WHERE
+            id = $id";
+
+            mysqli_query($connect, $sql);
+        }
     } else {
         $fileName = $_POST['old_image'];
+
+        $sql = "UPDATE products
+        SET
+        name = '$name',
+        email = '$email',
+        phone = '$phone',
+        description = '$description',
+        image = '$fileName',
+        price = '$price',
+        updated_at = '$updatedAt'
+        WHERE
+        id = $id";
+
+        mysqli_query($connect, $sql);
     }
 
-    $sql = "UPDATE products
-    SET
-    name = '$name',
-    email = '$email',
-    phone = '$phone',
-    description = '$description',
-    image = '$fileName',
-    manufacturing_date = '$manufacturingDate',
-    expiry_date = '$expiryDate'
-    WHERE
-    id = $id";
-
-    mysqli_query($connect, $sql);
+    mysqli_close($connect);
 }
 
 function delete($id)
@@ -86,7 +137,8 @@ function delete($id)
     global $connect;
 
     $sql = "DELETE FROM products WHERE id = $id";
-    $result = mysqli_query($connect, $sql);
 
-    return $result;
+    mysqli_query($connect, $sql);
+
+    mysqli_close($connect);
 }
