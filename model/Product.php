@@ -1,21 +1,10 @@
 <?php
 
+session_start();
+
 require_once "Connect.php";
 
 $connect = connect();
-
-function index()
-{
-    global $connect;
-
-    $sql = "SELECT * FROM products";
-
-    $result = mysqli_query($connect, $sql);
-
-    mysqli_close($connect);
-
-    return $result;
-}
 
 function store(
     $name,
@@ -35,8 +24,16 @@ function store(
     $description = htmlspecialchars($description);
     $price = htmlspecialchars($price);
 
+    if (strlen($name) > 100 || strlen($email) > 100 || strlen($phone) > 15
+        || !is_numeric($phone) || !is_numeric($price) ) {
+        $_SESSION['error'] = "Name, email, phone is invalid";
+        header("location: ?action=create");
+        exit();
+    }
+
     $folder        = 'images/';
-    $fileExtension = explode('.', $image['name'])[1];
+    // $fileExtension = explode('.', $image['name'])[1];
+    $fileExtension = pathinfo($image['name'], PATHINFO_EXTENSION);
     $fileName      = uniqid() . time() . '.' . $fileExtension;
     $pathFile      = $folder . $fileName;
 
@@ -87,6 +84,10 @@ function update(
     $phone = htmlspecialchars($phone);
     $description = htmlspecialchars($description);
     $price = htmlspecialchars($price);
+
+    if (strlen($name) > 100 || strlen($email) > 100 || strlen($phone) > 15) {
+        return false;
+    }
 
     if ($newImage['size'] > 0) {
         $folder        = 'images/';

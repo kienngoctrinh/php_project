@@ -2,9 +2,6 @@
 
 switch ($action) {
     case '':
-        require "model/Product.php";
-        require "model/Search.php";
-        $result = index();
         require 'view/index.php';
         break;
     case 'create':
@@ -14,7 +11,7 @@ switch ($action) {
         $name = $_POST['name'];
         $email = $_POST['email'];
         $phone = $_POST['phone'];
-        $description = $_POST['description'] ?? null;
+        $description = $_POST['description'] ?? '';
         $price = $_POST['price'];
         $image = $_FILES['image'];
         $createdAt = date('Y-m-d H:i:s');
