@@ -2,24 +2,31 @@
     li {
         color: red;
     }
+    .required {
+        color: red;
+    }
 </style>
 <a href="?action=detail&id=<?php echo $each['id'] ?>">Back</a>
 <div id="alert-error"></div>
 <form action="?action=update" method="post" enctype="multipart/form-data" id="form-submit">
     <input type="hidden" name="id" value="<?php echo $each['id'] ?>">
     Name
+    <span class="required">(*)</span>
     <input type="text" name="name" value="<?php echo $each['name'] ?>">
     <br>
     Email
+    <span class="required">(*)</span>
     <input type="email" name="email" value="<?php echo $each['email'] ?>">
     <br>
     Phone
+    <span class="required">(*)</span>
     <input type="text" name="phone" value="<?php echo $each['phone'] ?>">
     <br>
     Description
     <textarea name="description"><?php echo $each['description'] ?></textarea>
     <br>
     Price
+    <span class="required">(*)</span>
     <input type="text" name="price" value="<?php echo $each['price'] ?>">
     <br>
     Old Image

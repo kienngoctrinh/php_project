@@ -37,7 +37,7 @@ switch ($action) {
         $name = $_POST['name'];
         $email = $_POST['email'];
         $phone = $_POST['phone'];
-        $description = $_POST['description'] ?? null;
+        $description = $_POST['description'] ?? '';
         $price = $_POST['price'];
         $newImage = $_FILES['new_image'];
         $updatedAt = date('Y-m-d H:i:s');

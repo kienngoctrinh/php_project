@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 require_once "Connect.php";
 
 $connect = connect();
@@ -24,24 +22,20 @@ function store(
     $description = htmlspecialchars($description);
     $price = htmlspecialchars($price);
 
-    if (strlen($name) > 100 || strlen($email) > 100 || strlen($phone) > 15
-        || !is_numeric($phone) || !is_numeric($price) ) {
-        $_SESSION['error'] = "Name, email, phone is invalid";
-        header("location: ?action=create");
-        exit();
+    if (strlen($name) > 100 || strlen($email) > 100 || strlen($phone) > 15 || !is_numeric($phone) || !is_numeric($price) ) {
+        return false;
     }
 
     $folder        = 'images/';
-    // $fileExtension = explode('.', $image['name'])[1];
     $fileExtension = pathinfo($image['name'], PATHINFO_EXTENSION);
     $fileName      = uniqid() . time() . '.' . $fileExtension;
     $pathFile      = $folder . $fileName;
 
-    if ($image['name'] == '') {
+    if (empty($image['name'])) {
         $fileName = 'default.png';
     }
 
-    if ($fileExtension == 'jpg' || $fileExtension == 'png' || $fileExtension == 'jpeg' || $fileExtension == '') {
+    if ($fileExtension == 'jpg' || $fileExtension == 'png' || $fileExtension == 'jpeg' || empty($fileExtension)) {
         move_uploaded_file($image['tmp_name'], $pathFile);
 
         $sql = "INSERT INTO products (name, email, phone, description, price, image, created_at)
@@ -85,7 +79,7 @@ function update(
     $description = htmlspecialchars($description);
     $price = htmlspecialchars($price);
 
-    if (strlen($name) > 100 || strlen($email) > 100 || strlen($phone) > 15) {
+    if (strlen($name) > 100 || strlen($email) > 100 || strlen($phone) > 15 || !is_numeric($phone) || !is_numeric($price) ) {
         return false;
     }
 
@@ -99,16 +93,16 @@ function update(
             move_uploaded_file($newImage['tmp_name'], $pathFile);
 
             $sql = "UPDATE products
-            SET
-            name = '$name',
-            email = '$email',
-            phone = '$phone',
-            description = '$description',
-            image = '$fileName',
-            price = '$price',
-            updated_at = '$updatedAt'
-            WHERE
-            id = $id";
+                    SET
+                    name = '$name',
+                    email = '$email',
+                    phone = '$phone',
+                    description = '$description',
+                    image = '$fileName',
+                    price = '$price',
+                    updated_at = '$updatedAt'
+                    WHERE
+                    id = $id";
 
             mysqli_query($connect, $sql);
         }
@@ -116,16 +110,16 @@ function update(
         $fileName = $_POST['old_image'];
 
         $sql = "UPDATE products
-        SET
-        name = '$name',
-        email = '$email',
-        phone = '$phone',
-        description = '$description',
-        image = '$fileName',
-        price = '$price',
-        updated_at = '$updatedAt'
-        WHERE
-        id = $id";
+                SET
+                name = '$name',
+                email = '$email',
+                phone = '$phone',
+                description = '$description',
+                image = '$fileName',
+                price = '$price',
+                updated_at = '$updatedAt'
+                WHERE
+                id = $id";
 
         mysqli_query($connect, $sql);
     }
@@ -137,7 +131,10 @@ function delete($id)
 {
     global $connect;
 
-    $sql = "DELETE FROM products WHERE id = $id";
+    $sql = "DELETE FROM
+            products
+            WHERE
+            id = $id";
 
     mysqli_query($connect, $sql);
 

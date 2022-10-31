@@ -1,6 +1,18 @@
 <style>
-    li {
-        display: inline-block;
+    .pagination a {
+        color: black;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+    }
+
+    .pagination a.active {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .pagination a:hover:not(.active) {
+        background-color: #ddd;
     }
 </style>
 <h1>Product</h1>
@@ -30,5 +42,17 @@
         xhr.send();
     });
 
-
+    document.querySelectorAll('.pagination a').forEach(function (item) {
+        item.addEventListener('click', function (e) {
+            e.preventDefault();
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    document.getElementById('content').innerHTML = this.responseText;
+                }
+            }
+            xhr.open('GET', 'model/Search.php' + this.getAttribute('href'), true);
+            xhr.send();
+        })
+    });
 </script>
