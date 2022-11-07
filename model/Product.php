@@ -5,24 +5,27 @@ require_once "Connect.php";
 $connect = connect();
 
 function store(
+    $code,
     $name,
     $email,
     $phone,
     $description,
     $price,
     $image,
-    $createdAt
-)
-{
+    $createdAt,
+    $updatedAt
+) {
     global $connect;
 
-    $name = htmlspecialchars($name);
-    $email = htmlspecialchars($email);
-    $phone = htmlspecialchars($phone);
+    $name        = htmlspecialchars($name);
+    $email       = htmlspecialchars($email);
+    $phone       = htmlspecialchars($phone);
     $description = htmlspecialchars($description);
-    $price = htmlspecialchars($price);
+    $price       = htmlspecialchars($price);
 
-    if (strlen($name) > 100 || strlen($email) > 100 || strlen($phone) > 15 || !is_numeric($phone) || !is_numeric($price) ) {
+    $code = strtoupper($code);
+
+    if (strlen($name) > 100 || strlen($email) > 100 || strlen($phone) > 15 || !is_numeric($phone) || !is_numeric($price)) {
         return false;
     }
 
@@ -31,15 +34,15 @@ function store(
     $fileName      = uniqid() . time() . '.' . $fileExtension;
     $pathFile      = $folder . $fileName;
 
-    if (empty($image['name'])) {
+    if (empty($fileExtension)) {
         $fileName = 'default.png';
     }
 
     if ($fileExtension == 'jpg' || $fileExtension == 'png' || $fileExtension == 'jpeg' || empty($fileExtension)) {
         move_uploaded_file($image['tmp_name'], $pathFile);
 
-        $sql = "INSERT INTO products (name, email, phone, description, price, image, created_at)
-            VALUES ('$name', '$email', '$phone', '$description', '$price', '$fileName', '$createdAt')";
+        $sql = "INSERT INTO products (code, name, email, phone, description, price, image, created_at, updated_at)
+            VALUES ('$code', '$name', '$email', '$phone', '$description', '$price', '$fileName', '$createdAt', '$updatedAt')";
 
         mysqli_query($connect, $sql);
 
@@ -51,9 +54,9 @@ function detail($id)
 {
     global $connect;
 
-    $sql = "SELECT * FROM products WHERE id = $id";
+    $sql    = "SELECT * FROM products WHERE id = '$id'";
     $result = mysqli_query($connect, $sql);
-    $each = mysqli_fetch_array($result);
+    $each   = mysqli_fetch_array($result);
 
     mysqli_close($connect);
 
@@ -69,17 +72,16 @@ function update(
     $price,
     $newImage,
     $updatedAt
-)
-{
+) {
     global $connect;
 
-    $name = htmlspecialchars($name);
-    $email = htmlspecialchars($email);
-    $phone = htmlspecialchars($phone);
+    $name        = htmlspecialchars($name);
+    $email       = htmlspecialchars($email);
+    $phone       = htmlspecialchars($phone);
     $description = htmlspecialchars($description);
-    $price = htmlspecialchars($price);
+    $price       = htmlspecialchars($price);
 
-    if (strlen($name) > 100 || strlen($email) > 100 || strlen($phone) > 15 || !is_numeric($phone) || !is_numeric($price) ) {
+    if (strlen($name) > 100 || strlen($email) > 100 || strlen($phone) > 15 || !is_numeric($phone) || !is_numeric($price)) {
         return false;
     }
 
@@ -131,10 +133,7 @@ function delete($id)
 {
     global $connect;
 
-    $sql = "DELETE FROM
-            products
-            WHERE
-            id = $id";
+    $sql = "DELETE FROM products WHERE id = $id";
 
     mysqli_query($connect, $sql);
 

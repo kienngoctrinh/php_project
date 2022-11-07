@@ -1,7 +1,20 @@
 <style>
+    .text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* number of lines to show */
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .pagination {
+        text-align: right;
+        margin-top: 20px;
+    }
+
     .pagination a {
         color: black;
-        float: left;
         padding: 8px 16px;
         text-decoration: none;
     }
@@ -9,6 +22,7 @@
     .pagination a.active {
         background-color: #4CAF50;
         color: white;
+        pointer-events: none;
     }
 
     .pagination a:hover:not(.active) {
@@ -16,7 +30,7 @@
     }
 </style>
 <h1>Product</h1>
-<a href="?action=create">
+<a href="/create">
     <button>Create</button>
 </a>
 <div style="text-align: center">
@@ -28,31 +42,3 @@
 <div id="content">
     <?php require "model/Search.php" ?>
 </div>
-
-<script>
-    document.getElementById('form-search').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
-                document.getElementById('content').innerHTML = this.responseText;
-            }
-        }
-        xhr.open('GET', 'model/Search.php?search=' + document.getElementById('input-search').value, true);
-        xhr.send();
-    });
-
-    document.querySelectorAll('.pagination a').forEach(function (item) {
-        item.addEventListener('click', function (e) {
-            e.preventDefault();
-            const xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
-                    document.getElementById('content').innerHTML = this.responseText;
-                }
-            }
-            xhr.open('GET', 'model/Search.php' + this.getAttribute('href'), true);
-            xhr.send();
-        })
-    });
-</script>
