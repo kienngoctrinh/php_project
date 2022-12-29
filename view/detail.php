@@ -34,7 +34,7 @@
             <img style='width: 150px; height: 150px; object-fit: contain;' src="images/<?php echo $each['image'] ?>">
         </td>
         <td>
-            <a href="?action=create&id=<?php echo $each['id'] ?>">
+            <a href="/create/<?php echo $each['id'] ?>">
                 <button>Edit</button>
             </a>
         </td>
